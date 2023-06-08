@@ -3,19 +3,23 @@
 #include <stdio.h>
 
 #define PREFIX_LIST_CHUNK_SIZE 2
+#define PREFIX_MAX 32
 
 typedef struct {
-    unsigned int base;
-    char mask;
-} prefix;
+    struct prefix_item *l;
+    struct prefix_item *r;
+    char has_mask;
+} prefix_item;
 
 typedef struct {
-    prefix *list;
-    unsigned int size;
-    unsigned int pos;
-} prefix_list;
+    prefix_item *root;
+    char size;
+} prefix_tree;
 
-prefix_list prefixes;
+extern prefix_tree prefixes;
+
+void initialize_tree();
+prefix_item *init_branch();
 
 /**
  * initializes array
@@ -53,41 +57,3 @@ int contains_ip_addr(unsigned int ip, unsigned int base, char mask);
  * @return smallest mask of prefix which includes ip address
  */
 char check(unsigned int ip);
-
-//int main() {
-//    initialize_array();
-//
-//    if(add(0xC0A8000A, 16) < 0) {
-//        return -1;
-//    }
-//
-//    if(add(0x7B7B7B70, 28) < 0) {
-//        return -1;
-//    }
-//
-//    print_prefixes();
-//
-//    printf("%d\n", contains_ip_addr(0x0A010203, 0x0A000000, 8));
-//    printf("%d\n", contains_ip_addr(0xC0A80101, 0xC0A80000, 16));
-//    printf("%d\n", contains_ip_addr(0xC0A8010A, 0xC0A80100, 24));
-//
-//    printf("%d\n", contains_ip_addr(0x0B010203, 0x0A000000, 8));
-//    printf("%d\n", contains_ip_addr(0xC0B80101, 0xC0A80000, 16));
-//    printf("%d\n", contains_ip_addr(0x20010DB9, 0x20010DB8, 32));
-//
-//    if(del(0xC0A8000A, 16))
-//
-//    //print list after deletion
-//    printf("\nafter:\n");
-//
-//    for(int i = 0; i < prefixes.size; i++) {
-//        printf("Prefix %d: %X/%u\n", i, prefixes.list[i].base, prefixes.list[i].mask);
-//    }
-//
-//    //cleanup
-//    if(prefixes.list != NULL) {
-//        free(prefixes.list);
-//    }
-//
-//    return 0;
-//}

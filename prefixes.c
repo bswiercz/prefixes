@@ -1,9 +1,18 @@
 #include "prefixes.h"
 
-void initialize_array() {
-    prefixes.list = (prefix*)malloc(PREFIX_LIST_CHUNK_SIZE * sizeof(prefix));
-    prefixes.pos = 0;
-    prefixes.size = PREFIX_LIST_CHUNK_SIZE;
+prefix_tree prefixes;
+
+void initialize_tree() {
+    prefixes.root = init_branch();
+    prefixes.size = 0;
+}
+
+prefix_item *init_branch() {
+    prefix_item *item = (prefix_item*)malloc(sizeof(prefix_item));
+    item->l = NULL;
+    item->r = NULL;
+    item->has_mask = 0;
+    return item;
 }
 
 int add(unsigned int base, char mask) {
@@ -11,70 +20,32 @@ int add(unsigned int base, char mask) {
         return -1;
     }
 
-    if(prefixes.list == NULL) {
+    if(prefixes.root == NULL) {
         return -1;
     }
 
-    for(int i = 0; i < prefixes.pos; i++) {
-        if (prefixes.list[i].base == base && prefixes.list[i].mask == mask) {
-            return -1;
+    prefix_item *ptr = prefixes.root;
+
+    for(int i = 0; i < mask; i++) {
+        char dir = 0x1 & ( base >> (PREFIX_MAX - i - 1) );
+        if(dir == 0) {
+            if(ptr->l == NULL) {
+                ptr->l = init_branch();
+            }
+            ptr = ptr->l;
+        }
+        else if(dir == 1) {
+            if(ptr->r == NULL) {
+                ptr->r = init_branch();
+            }
+            ptr = ptr->r;
         }
     }
 
-    if(prefixes.pos == prefixes.size - 1) {
-        printf("Incr prefix array...\n");
-        prefixes.list = (prefix*)realloc(prefixes.list, (prefixes.size + PREFIX_LIST_CHUNK_SIZE) * sizeof(prefix));
-        if(prefixes.list == NULL) {
-            return -1;
-        }
-        prefixes.size = prefixes.size + PREFIX_LIST_CHUNK_SIZE;
+    if(ptr->l == NULL && ptr->r == NULL) {
+        ptr->has_mask = 1;
+        prefixes.size++;
     }
-
-    prefix p;
-    p.base = base;
-    p.mask = mask;
-    prefixes.list[prefixes.pos++] = p;
 
     return 0;
-}
-
-int del(unsigned int base, char mask) {
-    if(prefixes.list == NULL) {
-        return -1;
-    }
-
-    for(int i = 0; i < prefixes.pos; i++) {
-        if (prefixes.list[i].base == base && prefixes.list[i].mask == mask) {
-            memmove(&prefixes.list[i], &prefixes.list[i+1], (prefixes.pos-i-1) * sizeof(prefix));
-            prefixes.pos--;
-        }
-    }
-    return 0;
-}
-
-int contains_ip_addr(unsigned int ip, unsigned int base, char mask) {
-    unsigned int new_base = base >> (32 - mask);
-    unsigned int new_addr = ip >> (32 - mask);
-    if (new_addr == new_base) {
-        return 1;
-    }
-    return 0;
-}
-
-char check(unsigned int ip) {
-    char mask_min = -1;
-    for(int i = 0; i < prefixes.pos; i++) {
-        unsigned int base = prefixes.list[i].base;
-        unsigned int mask = (unsigned int)prefixes.list[i].mask;
-        if(contains_ip_addr(ip, base, mask) && (int)mask > (int)mask_min) {
-            mask_min = mask;
-        }
-    }
-    return mask_min;
-}
-
-void print_prefixes() {
-    for(int i = 0; i < prefixes.pos; i++) {
-        printf("Prefix %d: %X/%u\n", i, prefixes.list[i].base, prefixes.list[i].mask);
-    }
 }
