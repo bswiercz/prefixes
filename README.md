@@ -14,6 +14,7 @@ In this repo you will find prefixes implementation (`prefixes.c`, `prefixes.h`) 
 - Or you can build manually:
    - cd into source directory, build source and run:
 ```
+cd /location/of/project
 mkdir build
 cd build
 cmake ..
