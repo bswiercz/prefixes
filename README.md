@@ -2,24 +2,22 @@
 
 ### TL;DR
 
-This repo contains simple IP address prefix management implementation, along with tests. It allows adding, removing and querying DB for IP address. Recruitment assignment
+This repo contains simple IP address prefix management implementation. It allows adding, removing and querying DB for smallest prefix given IP address.
 
 ## What's inside
 
-In this repo you will find prefixes library (`prefixes.c`, `prefixes.h`) alongside with testing program (`main_test.cc`), which includes main function. Basically when you build and run this source, you can test library implementation :)
+In this repo you will find prefixes implementation (`prefixes.c`, `prefixes.h`) alongside tests (`main.c`).
 
 ## Build tests and run
 
 - Simply open project directory in CLion, specify toolchain paths under __Build, Execution, Deployment > Toolchains__ menu in IDE settings and run
 - Or you can build manually:
-
-Build source:
+   - cd into source directory, build source and run:
 ```
-cmake -S . -B cmake-build
-cmake --build cmake-build
-```
-Run tests:
-```
-./cmake-build/prefixes_test
+mkdir build
+cd build
+cmake ..
+cmake --build
+./prefixes
 ```
 
