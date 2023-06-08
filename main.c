@@ -1,7 +1,7 @@
 #include "prefixes.h"
 
 
-int runTest(char *testName, int (*testFunc)()) {
+int run_test(char *testName, int (*testFunc)()) {
     int testRes = (*testFunc)();
     if(testRes != 0) {
         printf("\nERROR\n%s returned unexpected value\n\n", testName);
@@ -99,7 +99,7 @@ int ShouldAddPrefixToCollectionTest() {
 
 int main() {
 
-    int res = runTest("ShouldAddPrefixToCollectionTest", &ShouldAddPrefixToCollectionTest);
+    int res = run_test("ShouldAddPrefixToCollectionTest", &ShouldAddPrefixToCollectionTest);
 
     return res;
 
