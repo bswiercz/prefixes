@@ -81,3 +81,40 @@ int del(unsigned int base, char mask) {
     return 0;
 }
 
+char check(unsigned int ip) {
+    if(prefixes.root == NULL) {
+        return -1;
+    }
+
+    char smallest_mask = -1;
+
+    prefix_item *ptr = prefixes.root;
+
+    for(int i = 0; i < PREFIX_MAX; i++) {
+        char dir = 0x1 & ( ip >> (PREFIX_MAX - i - 1) );
+
+        if(dir == 0) {
+            if(ptr->l == NULL) {
+                return smallest_mask;
+            }
+            ptr = ptr->l;
+        }
+        else if(dir == 1) {
+            if(ptr->r == NULL) {
+                return smallest_mask;
+            }
+            ptr = ptr->r;
+        }
+
+        if(ptr->has_mask == 1) {
+            smallest_mask = (char)(i + 1);
+        }
+    }
+
+    if(ptr->has_mask == 1) {
+        ptr->has_mask = 0;
+        prefixes.size--;
+    }
+
+    return smallest_mask;
+}
