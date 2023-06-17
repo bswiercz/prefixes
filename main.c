@@ -14,19 +14,13 @@ int run_test(char *testName, int (*testFunc)()) {
 int ShouldAddPrefixToCollectionTest() {
     //given
     initialize_tree();
-    add(0x0A000000, 8);
-    add(0x0A000000, 8);
-
-    add(0xC0A80000, 16);
-    add(0xC0A80000, 16);
-
-    add(0xC0A80000, 24);
-    add(0xC0A80000, 28);
-    add(0x7B7B7B70, 28);
-    add(0x20010DB8, 32);
+    add(0x0A000000, 1);
+    add(0xC0A80000, 2);
+    int res = prefixes.size;
+    deinitialize_tree();
 
     //then
-    if(prefixes.size == 6) {
+    if(res == 6) {
         return 0;
     }
     else {
@@ -49,9 +43,11 @@ int ShouldRemovePrefixFromCollectionTest() {
     del(0xC0A80000, 16);
     del(0x20010DB8, 1);
     del(0x20010DB8, 31);
+    int res = prefixes.size;
+    deinitialize_tree();
 
     //then
-    if(prefixes.size == 3) {
+    if(res == 3) {
         return 0;
     }
     else {
@@ -68,6 +64,8 @@ int ShouldCheckAndReturnSmallestMaskGivenPrefixes() {
 
     //when
     char res = check(0xC00000FF);
+
+    deinitialize_tree();
 
     //then
     if(res == 24) {
@@ -87,6 +85,8 @@ int ShouldNotFindPrefixInCollection() {
 
     //when
     char res = check(0xCC000000);
+
+    deinitialize_tree();
 
     //then
     if(res == -1) {

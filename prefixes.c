@@ -7,6 +7,23 @@ void initialize_tree() {
     prefixes.size = 0;
 }
 
+void deinit(prefix_item *node) {
+    if(node != NULL) {
+        if(node->l ==NULL && node->r==NULL) {
+            free(node);
+        }
+        else {
+            deinit(node->l);
+            deinit(node->r);
+        }
+    }
+}
+
+void deinitialize_tree() {
+    deinit(prefixes.root);
+    prefixes.size = 0;
+}
+
 prefix_item *init_branch() {
     prefix_item *item = (prefix_item*)malloc(sizeof(prefix_item));
     item->l = NULL;
@@ -109,11 +126,6 @@ char check(unsigned int ip) {
         if(ptr->has_mask == 1) {
             smallest_mask = (char)(i + 1);
         }
-    }
-
-    if(ptr->has_mask == 1) {
-        ptr->has_mask = 0;
-        prefixes.size--;
     }
 
     return smallest_mask;

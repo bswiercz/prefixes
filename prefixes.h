@@ -5,26 +5,35 @@
 #define PREFIX_LIST_CHUNK_SIZE 2
 #define PREFIX_MAX 32
 
-typedef struct {
-    struct prefix_item *l;
-    struct prefix_item *r;
-    char has_mask;
-} prefix_item;
+typedef struct prefix_item prefix_item;
 
-typedef struct {
+struct prefix_item {
+    prefix_item *l;
+    prefix_item *r;
+    char has_mask;
+};
+
+typedef struct prefix_tree prefix_tree;
+
+struct prefix_tree {
     prefix_item *root;
-    char size;
-} prefix_tree;
+    int size;
+};
 
 extern prefix_tree prefixes;
 
-void initialize_tree();
 prefix_item *init_branch();
 
 /**
  * initializes array
  */
-void initialize_array();
+void initialize_tree();
+
+
+/**
+ * deinitializes array
+ */
+void deinitialize_tree();
 
 /**
  * adds prefix to collection
