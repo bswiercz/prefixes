@@ -14,8 +14,16 @@ int run_test(char *testName, int (*testFunc)()) {
 int ShouldAddPrefixToCollectionTest() {
     //given
     initialize_tree();
-    add(0x0A000000, 1);
-    add(0xC0A80000, 2);
+    add(0x0A000000, 8);
+    add(0x0A000000, 8);
+
+    add(0xC0A80000, 16);
+    add(0xC0A80000, 16);
+
+    add(0xC0A80000, 24);
+    add(0xC0A80000, 28);
+    add(0x7B7B7B70, 28);
+    add(0x20010DB8, 32);
     int res = prefixes.size;
     deinitialize_tree();
 
